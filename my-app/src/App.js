@@ -1,10 +1,17 @@
 import './App.css';
 import './components/Navbar'
 import Navbar from './components/Navbar';
+import { useState } from 'react';
 import { Div, Text, Button, Icon } from 'atomize';
 import Wave from 'react-wavify'
+import axios from 'axios';
 
 function App() {
+  const [file, setFile] = useState()
+  function handleChange(event) {
+    setFile(event.target.files[0])
+  }
+
   return (
     <Div d="flex" flexDir="column" bg="#1F1D36" justify="space-between" align="center" h="100vh" overflow="hidden">
       <Navbar />
@@ -29,6 +36,7 @@ function App() {
         textWeight="700"
         textColor="#E9A6A6"
         rounded="circle"
+        shadow="2"
         p={{ r: "1.5rem", l: "1rem" }}
         hoverShadow="4"
         textSize="display1"
