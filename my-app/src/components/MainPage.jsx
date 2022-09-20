@@ -13,7 +13,7 @@ const MainPage = () => {
         <Navbar />
         <Div p="2%">
           <Text textSize="display2" textWeight="300" textColor="#E9A6A6" fontFamily="Questrial">
-            Upload your music and know it's genre among the 8 major genres.
+            Upload your music (as a .wav file) and know it's genre among the 8 major genres.
           </Text>
         </Div>
         <Button
