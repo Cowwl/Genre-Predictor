@@ -1,5 +1,5 @@
-from copyreg import pickle
 from fastapi import FastAPI
+import dill
 from fastai.vision.all import *
 from fastaudio.core.all import *
 from fastaudio.augment.all import *
@@ -7,14 +7,35 @@ from fastaudio.ci import skip_if_ci
 import timm
 import path
 from torch.distributions.beta import Beta
+import AudioNormalize
+import torchaudio
+import torchaudio.functional as F
+import torchaudio.transforms as T
 
-class AudioNormalize(Transform):
-    "Normalizes a single `AudioTensor`."
-    def encodes(self, x:AudioTensor): return (x-x.mean()) / x.std()
+def get_x(r):
+    return path / 'genres_original' / r['filename'].split('.')[0] / str(
+        r['filename'])
+
+
+# learn1 = load_learner(
+#     'D:/Leak-Detection/Genre-Predictor/backend/models/export_r18.pkl'
+# )
+metadata = torchaudio.info('C:/Users/anubh/Downloads/Music/MIDDLE-OF-THE-NIGHT.mp3')
+print(metadata)
+
+# audio = AudioTensor.create(
+#     'C:/Users/anubh/Downloads/Music/MIDDLE-OF-THE-NIGHT.mp3'
+# )
+pred, pred_idx, probs = learn1.predict(audio)
+sorted, indices = torch.sort(probs, descending=True)
+for i in range(0, 5):
+    print(
+        f'Prediction: {learn1.dls.vocab[indices[i]]}; Probability: {sorted[i]:.04f}'
+    )
 
 app = FastAPI()
-model1 = load_learner('D:/Leak-Detection/Genre-Predictor/backend/models/export_r18.pkl')
-model2 = load_learner('D:/Leak-Detection/Genre-Predictor/backend/models/export_r34.pkl')
+
+
 @app.get("/")
 async def root():
     return {"message": "Welcome to the Predictor API"}
