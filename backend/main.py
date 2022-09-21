@@ -67,7 +67,7 @@ def load_model():
 @app.get('/')
 def index():
     return {'message': 'This is the homepage of the API '}
-@app.get('/predict')
+@app.post('/predict')
 def get_music_category():
     ResultsArr = []
     audio = AudioTensor.create("C:/Users/anubh/Downloads/Music/MIDDLE-OF-THE-NIGHT.wav")
