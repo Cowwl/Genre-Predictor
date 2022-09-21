@@ -43,7 +43,7 @@ const MainPage = () => {
     let bodyContent = new FormData();
     bodyContent.append("file", selectedFile);
 
-    let response = await fetch("http://localhost:8000/predict", {
+    let response = await fetch("http://ec0b-2a09-bac0-269-00-681d-1009.ngrok.io/predict", {
       method: "POST",
       body: bodyContent,
     });
