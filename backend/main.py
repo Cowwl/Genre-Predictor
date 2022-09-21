@@ -10,7 +10,7 @@ from fastaudio.augment.all import *
 from fastaudio.ci import skip_if_ci
 import timm
 from torch.distributions.beta import Beta
-from fastapi import FastAPI
+from fastapi import FastAPI, File, UploadFile
 from pydantic import BaseModel
 from loguru import logger
 from fastapi.middleware.cors import CORSMiddleware
@@ -48,7 +48,7 @@ origins = [
     "http://localhost.tiangolo.com",
     "https://localhost.tiangolo.com",
     "http://localhost",
-    "http://localhost:3000",
+    "http://localhost:3000"
 ]
 
 app.add_middleware(
@@ -68,18 +68,23 @@ def load_model():
 def index():
     return {'message': 'This is the homepage of the API '}
 @app.post('/predict')
-def get_music_category():
+async def get_music_category(file: Union[UploadFile, None] = None):
+#     if not file:
+#         return {"message": "No upload file sent"}
+#     else:
+#         return {"filename": file.filename}
+    contents = await file.read()
+    file = open('demo.wav', 'wb')
+    file.write(contents)
+    file.close()
     ResultsArr = []
-    audio = AudioTensor.create("C:/Users/anubh/Downloads/Music/MIDDLE-OF-THE-NIGHT.wav")
+    audio = AudioTensor.create(Path('demo.wav'))
     pred,pred_idx,probs = model.predict(audio)
     sorted, indices = torch.sort(probs, descending = True)
     for i in range(0,5):
         Prediction = model.dls.vocab[indices[i]]
         prob = float(sorted[i])
-        results = {
-        "Prediction" : Prediction,
-        "Probability" : prob
-        }
+        results = {'Prediction' : Prediction,'Probability' : prob}
         ResultsArr.append(results)
     return ResultsArr
 
@@ -94,7 +99,7 @@ ngrok_tunnel = ngrok.connect(8000)
 ngrok_tunnel
 
 
-# In[7]:
+# In[ ]:
 
 
 import nest_asyncio
