@@ -1,23 +1,25 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 from fastai.vision.all import *
 from fastaudio.core.all import *
 from fastaudio.augment.all import *
+import uvicorn
 from fastaudio.ci import skip_if_ci
 import timm
 from torch.distributions.beta import Beta
 from fastapi import FastAPI, File, UploadFile
 from pydantic import BaseModel
 from loguru import logger
+import nest_asyncio
 from fastapi.middleware.cors import CORSMiddleware
 import json
 
 
-# In[2]:
+# In[ ]:
 
 
 import pathlib
@@ -25,7 +27,7 @@ temp = pathlib.PosixPath
 pathlib.PosixPath = pathlib.WindowsPath
 
 
-# In[3]:
+# In[ ]:
 
 
 class AudioNormalize(Transform):
@@ -33,14 +35,14 @@ class AudioNormalize(Transform):
     def encodes(self, x:AudioTensor): return (x-x.mean()) / x.std()
 
 
-# In[4]:
+# In[ ]:
 
 
 def get_x(r): 
   return path/'genres_original'/r['filename'].split('.')[0]/str(r['filename'])
 
 
-# In[5]:
+# In[ ]:
 
 
 app = FastAPI()
@@ -48,7 +50,8 @@ origins = [
     "http://localhost.tiangolo.com",
     "https://localhost.tiangolo.com",
     "http://localhost",
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "https://genrify-85adbhpec-cowwl.vercel.app/"
 ]
 
 app.add_middleware(
@@ -88,29 +91,17 @@ async def get_music_category(file: Union[UploadFile, None] = None):
         ResultsArr.append(results)
     return ResultsArr
 
-
-# In[6]:
-
-
-from pyngrok import ngrok
-
-ngrok_tunnel = ngrok.connect(8000)
-
-ngrok_tunnel
+if __name__ == "__main__":
+    nest_asyncio.apply()
+    uvicorn.run("main:app", port=8000)
 
 
 # In[ ]:
 
 
-import nest_asyncio
-import uvicorn
+# from pyngrok import ngrok
 
-nest_asyncio.apply()
-uvicorn.run(app, port=8000)
+# ngrok_tunnel = ngrok.connect(8000)
 
-
-# In[ ]:
-
-
-
+# ngrok_tunnel
 

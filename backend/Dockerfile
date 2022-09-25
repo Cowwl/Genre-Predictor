@@ -1,12 +1,14 @@
 FROM python:3.9-slim
 
-COPY ./ /app/
-
+COPY ./ /app/src
 COPY ./requirements.txt /app
 
 WORKDIR /app
 
-RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
+RUN pip3 install -r requirements.txt
 
-# 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
+RUN pip3 install fastai --upgrade
+
+EXPOSE 8000
+
+CMD ["uvicorn", "src.main:app", "--host=0.0.0.0", "--reload"]
