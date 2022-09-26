@@ -22,9 +22,9 @@ import json
 # In[ ]:
 
 
-import pathlib
-temp = pathlib.PosixPath
-pathlib.PosixPath = pathlib.WindowsPath
+# import pathlib
+# temp = pathlib.PosixPath
+# pathlib.PosixPath = pathlib.WindowsPath
 
 
 # In[ ]:
@@ -65,7 +65,7 @@ app.add_middleware(
 @app.on_event("startup")
 def load_model():
     global model
-    model = load_learner(Path('D:/Academics/ML Stuff/Genre Predictor/export_r18.pkl'))
+    model = load_learner(Path('D:/Leak-Detection/Genre-Predictor/backend/models'))
     return {'message': 'Loaded!'}
 @app.get('/')
 def index():
