@@ -1,17 +1,16 @@
 FROM python:3.9-slim-bullseye
 
-COPY ./ /app/src
-COPY ./requirements.txt /app
-
 WORKDIR /app
 
-RUN pip3 install -r requirements.txt
+COPY ./ /app/src
 
-RUN pip3 install fastai --upgrade
+COPY ./requirements.txt /app/requirements.txt
+
+RUN pip3 install --no-cache-dir -r /app/requirements.txt
+
+RUN pip3 install fastai --upgrade --no-cache-dir
 
 RUN apt-get update -y && apt-get install -y --no-install-recommends build-essential gcc \
                                         libsndfile1 
 
-EXPOSE 8000
-
-CMD ["uvicorn", "src.main:app", "--host=0.0.0.0", "--reload"]
+CMD ["python", "src/main.py", "--host=127.0.0.1", "--port=8000"]
